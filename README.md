@@ -4,13 +4,13 @@ Methods for encryption and decryption of CSV files. Allows encrypted CSV files t
 
 ## main methods
 
-### load_encrypted_csv(encrypted_csv_path, password)
+#### load_encrypted_csv(encrypted_csv_path, password)
 * Decrypts CSV and loads into memory (list)
 
-### encrypt_csv_file(csv_path, encrypted_csv_path, password)
+#### encrypt_csv_file(csv_path, encrypted_csv_path, password)
 * Encrypts CSV file and writes to new file
 
-### decrypt_csv_file(encrypted_csv_path, decrypted_csv_path, password)
+#### decrypt_csv_file(encrypted_csv_path, decrypted_csv_path, password)
 * Decrypts CSV file and writes to new file
 
 ## todo
