@@ -27,20 +27,6 @@ def decrypt_csv_file(encrypted_csv_path, decrypted_csv_path, password):
   csv_list = load_encrypted_csv(encrypted_csv_path, password)
   write_csv(csv_list, decrypted_csv_path)
 
-def load_encrypted_csv(encrypted_csv_path, password):
-  """Loads encrypted CSV file into memory
-
-  Args:
-    encrypted_csv_path: Path to existing encrypted CSV file
-    password: Password to decrypt input file.
-  Returns:
-    csv_list: List containing each row of CSV as a sub-list containing each
-      of the row's values.
-      (Ex. "1,2,3\na,b,c" = [['1', '2', '3'], ['a', 'b', 'c']])
-  """
-  csv_list = decrypt_csv(encrypted_csv_path, password)
-  return csv_list
-
 def load_csv(csv_path):
   """Loads unencrypted CSV file into memory
 
@@ -91,7 +77,7 @@ def bytes_to_csv(csv_bytes):
 def derive_key_and_iv(password, salt, key_length, iv_length):
   """Auxilary function to generate key and iv for encryption/decryption
 
-  Source:
+  Encryption/Decryption derived from:
   http://stackoverflow.com/questions/16761458/how-to-aes-encrypt-decrypt-files-using-python-pycrypto-in-an-openssl-compatible
   """
   key_and_iv = key_and_iv_chunk = b''
@@ -102,9 +88,6 @@ def derive_key_and_iv(password, salt, key_length, iv_length):
 
 def encrypt_csv(in_csv, out_path, password, key_length=32):
   """Encrypts given CSV list and outputs to file
-
-  Derived from:
-  http://stackoverflow.com/questions/16761458/how-to-aes-encrypt-decrypt-files-using-python-pycrypto-in-an-openssl-compatible
 
   Args:
     in_csv: CSV list representation
@@ -132,9 +115,6 @@ def encrypt_csv(in_csv, out_path, password, key_length=32):
 
 def decrypt_csv(in_path, password, key_length=32):
   """Decrypts given encrypted CSV file and converts to list object
-
-  Derived from:
-  http://stackoverflow.com/questions/16761458/how-to-aes-encrypt-decrypt-files-using-python-pycrypto-in-an-openssl-compatible
 
   Args:
     in_path: Path to encrypted CSV file
