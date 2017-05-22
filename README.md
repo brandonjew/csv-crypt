@@ -18,3 +18,4 @@ Methods for encryption and decryption of CSV files. Allows encrypted CSV files t
 
 ## todo
 * Write object that behaves like csv.reader for encrypted CSV files
+* Write method for accessing encrypted files one chunk at a time.
