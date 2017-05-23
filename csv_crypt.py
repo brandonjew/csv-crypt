@@ -24,7 +24,7 @@ def decrypt_csv_file(encrypted_csv_path, decrypted_csv_path, password):
     decrypted_csv_path: Path for decrypted output CSV file
     password: Password to decrypt input file.
   """
-  csv_list = load_encrypted_csv(encrypted_csv_path, password)
+  csv_list = decrypt_csv(encrypted_csv_path, password)
   write_csv(csv_list, decrypted_csv_path)
 
 def load_csv(csv_path):
@@ -149,3 +149,45 @@ def decrypt_csv(in_path, password, key_length=32):
     except:
       raise ValueError("Password incorrect")
     return csv_list
+
+def decrypt_reader(in_path, password, key_length=32):
+  """Decrypts given encrypted CSV file and generates each row
+
+  Decrypts CSV in chunks and yields rows when they are fully decrypted.
+  Avoids having the entirety of a large CSV in memory.
+  Currently does not support having a '/r/n' line break within a value.
+
+  Args:
+    in_path: Path to encrypted CSV file
+    password: Password to decrypt input file
+    key_length: Length of key for encryption/decryption
+  Returns:
+    Generator that yields each row of the CSV
+  """
+  with open(in_path, 'rb') as in_file:
+    password = str.encode(password)
+    block_size = AES.block_size
+    salt = in_file.read(block_size)#[len(b'Salted__'):]
+    key, i_v = derive_key_and_iv(password, salt, key_length, block_size)
+    cipher = AES.new(key, AES.MODE_CBC, i_v)
+    next_chunk = b''
+    finished = False
+    csv_bytes = b''
+    while not finished:
+      chunk = next_chunk
+      next_chunk = cipher.decrypt(in_file.read(1024 * block_size))
+      if len(next_chunk) == 0:
+        padding_length = chunk[-1]
+        if padding_length < 1 or padding_length > block_size:
+          raise ValueError("Password incorrect")
+        chunk = chunk[:-padding_length]
+        finished = True
+      csv_bytes += chunk
+      newline_pos = csv_bytes.find(b"\r\n")
+      while newline_pos != -1:
+        try:
+          yield bytes_to_csv(csv_bytes[:(newline_pos + 2)])[0]
+        except:
+          raise ValueError("Password incorrect")
+        csv_bytes = csv_bytes[(newline_pos + 2):]
+        newline_pos = csv_bytes.find(b"\r\n")

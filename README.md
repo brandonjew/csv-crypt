@@ -4,6 +4,9 @@ Methods for encryption and decryption of CSV files. Allows encrypted CSV files t
 
 ## main methods
 
+#### decrypt_reader(in_path, password, key_length=32)
+* Decrypts CSV file and returns a generator that iterates over each row of the CSV. Avoids loading entirety of large decrypted CSVs into memory. 
+
 #### encrypt_csv_file(csv_path, encrypted_csv_path, password)
 * Encrypts CSV file and writes to new file
 
@@ -17,5 +20,4 @@ Methods for encryption and decryption of CSV files. Allows encrypted CSV files t
 * Decrypts CSV file and loads into memory. Returns CSV list object. 
 
 ## todo
-* Write object that behaves like csv.reader for encrypted CSV files
-* Write method for accessing encrypted files one chunk at a time.
+* Better method for detecting validity of password given for decryption.
